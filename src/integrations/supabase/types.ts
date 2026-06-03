@@ -14,16 +14,251 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      album_feedback: {
+        Row: {
+          capsule_id: string
+          created_at: string
+          id: string
+          rating: number
+          style: string
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          style: string
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          style?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "album_feedback_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      capsule_members: {
+        Row: {
+          capsule_id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "capsule_members_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      capsules: {
+        Row: {
+          admin_id: string
+          cover_url: string | null
+          created_at: string
+          id: string
+          max_uploads: number
+          status: Database["public"]["Enums"]["capsule_status"]
+          title: string
+          type: Database["public"]["Enums"]["capsule_type"]
+          unlock_at: string
+        }
+        Insert: {
+          admin_id: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          max_uploads?: number
+          status?: Database["public"]["Enums"]["capsule_status"]
+          title: string
+          type?: Database["public"]["Enums"]["capsule_type"]
+          unlock_at: string
+        }
+        Update: {
+          admin_id?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          max_uploads?: number
+          status?: Database["public"]["Enums"]["capsule_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["capsule_type"]
+          unlock_at?: string
+        }
+        Relationships: []
+      }
+      media_items: {
+        Row: {
+          capsule_id: string
+          created_at: string
+          duration_ms: number | null
+          file_path: string
+          id: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          mime_type: string | null
+          user_id: string
+        }
+        Insert: {
+          capsule_id: string
+          created_at?: string
+          duration_ms?: number | null
+          file_path: string
+          id?: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          mime_type?: string | null
+          user_id: string
+        }
+        Update: {
+          capsule_id?: string
+          created_at?: string
+          duration_ms?: number | null
+          file_path?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          mime_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_items_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          capsule_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          capsule_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          capsule_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      media_notifications: {
+        Row: {
+          capsule_id: string | null
+          created_at: string | null
+          id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          capsule_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          capsule_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_items_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      capsule_can_upload: {
+        Args: { _capsule: string; _user: string }
+        Returns: boolean
+      }
+      is_capsule_admin: {
+        Args: { _capsule: string; _user: string }
+        Returns: boolean
+      }
+      is_capsule_member: {
+        Args: { _capsule: string; _user: string }
+        Returns: boolean
+      }
+      is_capsule_revealed: { Args: { _capsule: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      capsule_status: "active" | "sealed" | "revealed"
+      capsule_type: "standard" | "transformation" | "individual"
+      media_kind: "photo" | "video" | "voice"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +385,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      capsule_status: ["active", "sealed", "revealed"],
+      capsule_type: ["standard", "transformation", "individual"],
+      media_kind: ["photo", "video", "voice"],
+    },
   },
 } as const
