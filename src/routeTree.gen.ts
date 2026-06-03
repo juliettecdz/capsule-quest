@@ -9,38 +9,138 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedCaptureRouteImport } from './routes/_authenticated/capture'
+import { Route as AuthenticatedCapsulesRouteImport } from './routes/_authenticated/capsules'
+import { Route as AuthenticatedCapsulesNewRouteImport } from './routes/_authenticated/capsules.new'
+import { Route as AuthenticatedCapsulesIdRouteImport } from './routes/_authenticated/capsules.$id'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCaptureRoute = AuthenticatedCaptureRouteImport.update({
+  id: '/capture',
+  path: '/capture',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCapsulesRoute = AuthenticatedCapsulesRouteImport.update({
+  id: '/capsules',
+  path: '/capsules',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCapsulesNewRoute =
+  AuthenticatedCapsulesNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedCapsulesRoute,
+  } as any)
+const AuthenticatedCapsulesIdRoute = AuthenticatedCapsulesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedCapsulesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/capsules': typeof AuthenticatedCapsulesRouteWithChildren
+  '/capture': typeof AuthenticatedCaptureRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/capsules/$id': typeof AuthenticatedCapsulesIdRoute
+  '/capsules/new': typeof AuthenticatedCapsulesNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/capsules': typeof AuthenticatedCapsulesRouteWithChildren
+  '/capture': typeof AuthenticatedCaptureRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/capsules/$id': typeof AuthenticatedCapsulesIdRoute
+  '/capsules/new': typeof AuthenticatedCapsulesNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/capsules': typeof AuthenticatedCapsulesRouteWithChildren
+  '/_authenticated/capture': typeof AuthenticatedCaptureRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/capsules/$id': typeof AuthenticatedCapsulesIdRoute
+  '/_authenticated/capsules/new': typeof AuthenticatedCapsulesNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/capsules'
+    | '/capture'
+    | '/settings'
+    | '/capsules/$id'
+    | '/capsules/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/capsules'
+    | '/capture'
+    | '/settings'
+    | '/capsules/$id'
+    | '/capsules/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/capsules'
+    | '/_authenticated/capture'
+    | '/_authenticated/settings'
+    | '/_authenticated/capsules/$id'
+    | '/_authenticated/capsules/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +148,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/capture': {
+      id: '/_authenticated/capture'
+      path: '/capture'
+      fullPath: '/capture'
+      preLoaderRoute: typeof AuthenticatedCaptureRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/capsules': {
+      id: '/_authenticated/capsules'
+      path: '/capsules'
+      fullPath: '/capsules'
+      preLoaderRoute: typeof AuthenticatedCapsulesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/capsules/new': {
+      id: '/_authenticated/capsules/new'
+      path: '/new'
+      fullPath: '/capsules/new'
+      preLoaderRoute: typeof AuthenticatedCapsulesNewRouteImport
+      parentRoute: typeof AuthenticatedCapsulesRoute
+    }
+    '/_authenticated/capsules/$id': {
+      id: '/_authenticated/capsules/$id'
+      path: '/$id'
+      fullPath: '/capsules/$id'
+      preLoaderRoute: typeof AuthenticatedCapsulesIdRouteImport
+      parentRoute: typeof AuthenticatedCapsulesRoute
+    }
   }
 }
 
+interface AuthenticatedCapsulesRouteChildren {
+  AuthenticatedCapsulesIdRoute: typeof AuthenticatedCapsulesIdRoute
+  AuthenticatedCapsulesNewRoute: typeof AuthenticatedCapsulesNewRoute
+}
+
+const AuthenticatedCapsulesRouteChildren: AuthenticatedCapsulesRouteChildren = {
+  AuthenticatedCapsulesIdRoute: AuthenticatedCapsulesIdRoute,
+  AuthenticatedCapsulesNewRoute: AuthenticatedCapsulesNewRoute,
+}
+
+const AuthenticatedCapsulesRouteWithChildren =
+  AuthenticatedCapsulesRoute._addFileChildren(
+    AuthenticatedCapsulesRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCapsulesRoute: typeof AuthenticatedCapsulesRouteWithChildren
+  AuthenticatedCaptureRoute: typeof AuthenticatedCaptureRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCapsulesRoute: AuthenticatedCapsulesRouteWithChildren,
+  AuthenticatedCaptureRoute: AuthenticatedCaptureRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
