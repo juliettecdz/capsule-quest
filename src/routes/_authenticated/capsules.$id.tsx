@@ -86,7 +86,9 @@ function CapsuleRoom() {
 
   const feed: FeedItem[] = [
     ...messages.map((m): FeedItem => ({ kind: "msg", id: m.id, user_id: m.user_id, body: m.body, created_at: m.created_at })),
-    ...notifs.map((n): FeedItem => ({ kind: "media", id: n.id, user_id: n.user_id, created_at: n.created_at })),
+    ...notifs
+      .filter((n) => n.id && n.user_id && n.created_at)
+      .map((n): FeedItem => ({ kind: "media", id: n.id as string, user_id: n.user_id as string, created_at: n.created_at as string })),
   ].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight }); }, [feed.length]);
